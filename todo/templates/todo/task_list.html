@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>To-Do List</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin-top: 50px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .task-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .task-details {
+            flex-grow: 1;
+            margin-left: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 500px;
+        }
+        .task-title {
+            font-weight: bold;
+        }
+        .btn-container {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-primary, .btn-danger {
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4 text-center">To-Do List</h1>
+        <ul class="list-group">
+            {% for task in tasks %}
+                <li class="task-item list-group-item">
+                    <form method="post" action="{% url 'toggle_task' task.id %}">
+                        {% csrf_token %}
+                        <input type="checkbox" name="completed" onchange="this.form.submit()" {% if task.completed %}checked{% endif %}>
+                        <div class="task-details">
+                            <span class="task-title">{{ task.title }}</span> - 
+                            <span class="text-muted">{{ task.description|truncatechars:50 }}</span>
+                        </div>
+                    </form>
+                    <div class="btn-container">
+                        <a href="{% url 'edit_task' task.id %}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> Edit</a>
+                        <a href="{% url 'delete_task' task.id %}" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i> Delete</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'add_task' %}" class="btn btn-success my-4"><i class="fas fa-plus"></i> Add Task</a>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
